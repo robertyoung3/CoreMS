@@ -1,0 +1,14 @@
+FROM code-registry.emsl.pnl.gov/mass-spectrometry/corems/corems-base-310-dotnet6:2.5.3-1005
+
+WORKDIR /workspace
+
+# Install development tools
+RUN python3 -m pip install --upgrade pip \
+    && python3 -m pip install pylint pytest pytest-cov debugpy ipykernel
+
+# Install CoreMS in development mode
+COPY requirements.txt .
+RUN python3 -m pip install -r requirements.txt
+
+ENV PYTHONPATH=/workspace:${PYTHONPATH}
+ENV PYTHONNET_RUNTIME=coreclr

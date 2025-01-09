@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+  corems_dev:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile.dev
+    volumes:
+      - ..:/workspace:cached
+    command: sleep infinity
+    environment:
+      COREMS_DATABASE_URL: "postgresql+psycopg2://coremsappdb:coremsapppnnl@molformdb:5432/coremsapp"
+    depends_on:
+      - molformdb
