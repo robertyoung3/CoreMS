@@ -3,7 +3,7 @@ __date__ = "Jul 02, 2019"
 
 import dataclasses
 import os
-from typing import List, Dict
+from typing import Dict, List
 
 from corems.encapsulation.constant import Atoms, Labels
 
@@ -686,9 +686,9 @@ class MolecularLookupDictSettings:
         self.usedAtoms = {
             "C": (1, 90),
             "H": (4, 200),
-            "O": (0, 12),
-            "N": (0, 0),
-            "S": (0, 0),
+            "O": (0, 30),
+            "N": (0, 5),
+            "S": (0, 2),
             "P": (0, 0),
             "Cl": (0, 0),
         }
@@ -821,7 +821,8 @@ class MolecularFormulaSearchSettings:
     verbose_processing: bool, optional
         If True, print verbose processing information. Default is True.
     """
-    verbose_processing: bool = True    
+
+    verbose_processing: bool = True
 
     use_isotopologue_filter: bool = False
 
