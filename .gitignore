@@ -84,3 +84,6 @@ ext_lib/
 *.egg*
 config.yaml
 *.token
+
+# Personal notes
+notes/

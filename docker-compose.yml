@@ -10,6 +10,26 @@ services:
       - 5432:5432
     env_file:
       - ./.env
+    networks:
+      - corems-network
+
+  corems_notebook:
+    build: .
+    volumes:
+      - ./tests/tests_data:/home/corems/data
+    ports:
+      - 8888:8888
+    container_name: corems
+    networks:
+      - corems-network
+    env_file:
+      - ./.env
+    depends_on:
+      - molformdb
+
+networks:
+  corems-network:
+    driver: bridge
 
 volumes:
   db-volume:
