@@ -179,6 +179,17 @@ docker-compose up -d
 -  Change the url_database on MSParameters.molecular_search.url_database to: "postgresql+psycopg2://coremsappdb:coremsapppnnl@localhost:5432/coremsapp"
 -  Set the url_database env variable COREMS_DATABASE_URL to: "postgresql+psycopg2://coremsappdb:coremsapppnnl@localhost:5432/coremsapp"
 
+"""
+(*RBY* For corems-network containing molformdb (PostgreSQL) and corems (CoreMS + Jupyter) services)
+
+-  Set the url_database env variable COREMS_DATABASE_URL to: "postgresql+psycopg2://coremsappuser:coremsapppnnl@molformdb:5432/coremsapp"
+-  Change the url_database on corems.encapsulation.factory.processingSetting.MolecularFormulaSearchSettings.url_database to: "postgresql+psycopg2://coremsappuser:coremsapppnnl@molformdb:5432/coremsapp"
+- Change the url_database on corems.encapsulation.factory.processingSetting.CompoundSearchSettings.url_databaseto "postgresql+psycopg2://coremsappuser:coremsapppnnl@molformdb:5432/lowres" (even though I don't expect to use a lowres database)
+- Change the url_database in mass_spectrum.calc.AutoRecalibration.HighResRecalibration.set_uncal_settings to read 'self.mass_spectrum.molecular_search_settings.url_database = "postgresql+psycopg2://coremsappuser:coremsapppnnl@molformdb:5432/coremsapp"'
+
+(*RBY*)
+"""
+
 ### Thermo Raw File Access:
 
 To be able to open thermo file a installation of pythonnet is needed:
