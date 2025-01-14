@@ -7,13 +7,15 @@ Created on March 23 2023
 Modules for automatic mass internal recalibration
 """
 
-from lmfit.models import GaussianModel
-import seaborn as sns
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from corems.molecular_id.search.molecularFormulaSearch import SearchMolecularFormulas
 import copy
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from lmfit.models import GaussianModel
+
+from corems.molecular_id.search.molecularFormulaSearch import SearchMolecularFormulas
 
 
 class HighResRecalibration:
@@ -75,7 +77,7 @@ class HighResRecalibration:
         # TODO rework this.
 
         if self.docker:
-            self.mass_spectrum.molecular_search_settings.url_database = "postgresql+psycopg2://coremsappdb:coremsapppnnl@localhost:5432/coremsapp"
+            self.mass_spectrum.molecular_search_settings.url_database = "postgresql+psycopg2://coremsappuser:coremsapppnnl@molformdb:5432/coremsapp"
         else:
             self.mass_spectrum.molecular_search_settings.url_database = None
         self.mass_spectrum.molecular_search_settings.error_method = None

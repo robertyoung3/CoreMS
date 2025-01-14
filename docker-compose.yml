@@ -1,31 +1,39 @@
-version: '3.1'
-
 services:
   molformdb:
+    container_name: molformdb
     image: postgres
     restart: always
+    init: true
     volumes:
       - db-volume:/var/lib/postgresql/data
+      # - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - 5432:5432
     env_file:
       - ./.env
     networks:
       - corems-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U coremsappuser -d coremsapp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   corems_notebook:
+    container_name: corems
     build: .
+    init: true
     volumes:
-      - ./tests/tests_data:/home/corems/data
+      - ./data:/home/corems/data
     ports:
       - 8888:8888
-    container_name: corems
     networks:
       - corems-network
     env_file:
       - ./.env
     depends_on:
-      - molformdb
+      molformdb:
+        condition: service_healthy
 
 networks:
   corems-network:

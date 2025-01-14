@@ -16,11 +16,11 @@ As of CoreMS 2.0, minimum Python version supported is 3.10.
 ## CoreMS with Docker Database - Recommended <a name="medium"></a>  
 This approach is slightly more complex and recommended for those who want improved performance and the most up-to-date public releases of CoreMS. Here, we will be installing CoreMS from github, and using Docker to deploy a postgresql database.   
 
-(RBY: Modify corems.encapsulation.factory.processingSetting.MolecularLookupDictSettings if necessary)
+(*RBY*: Modify corems.encapsulation.factory.processingSetting.MolecularLookupDictSettings if necessary)
 
 ### Windows   
 1. Download and install Python 3.10 
-	a. [Python 3.10.11]](https://www.python.org/downloads/release/python-31011/)  
+	a. [Python 3.10.11](https://www.python.org/downloads/release/python-31011/)  
 	b. *Windows installer (64-bit)*  
 	c. During installation, make sure to select 'Add Python 3.10 to PATH'. **Note:** if you have another version of python installed, this may create a conflict.  
     d. Note - Python 3.10.11 is the last version of Py3.10 with a pre-built binary for Windows.   

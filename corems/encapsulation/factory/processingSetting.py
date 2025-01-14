@@ -583,7 +583,7 @@ class CompoundSearchSettings:
 
     """
 
-    url_database: str = "postgresql+psycopg2://coremsappdb:coremsapppnnl@localhost:5432/lowres"  # 'postgresql://postgres:labthomson0102@172.22.113.27:5432/GCMS' # 'sqlite:///db/pnnl_lowres_gcms_compounds.sqlite'
+    url_database: str = "postgresql+psycopg2://coremsappuser:coremsapppnnl@molformdb:5432/lowres"  # 'postgresql://postgres:labthomson0102@172.22.113.27:5432/GCMS' # 'sqlite:///db/pnnl_lowres_gcms_compounds.sqlite'
 
     ri_search_range: float = 35
 
@@ -693,7 +693,7 @@ class MolecularLookupDictSettings:
 
         self.min_mz = 50
 
-        self.max_mz = 1200
+        self.max_mz = 1500
 
         self.min_dbe = 0
 
@@ -748,7 +748,7 @@ class MolecularFormulaSearchSettings:
     min_peaks_per_class : int, optional
         Minimum number of peaks per class. Default is 15.
     url_database : str, optional
-        URL for the database. Default is 'postgresql+psycopg2://coremsappdb:coremsapppnnl@localhost:5432/coremsapp'.
+        URL for the database. Default is 'postgresql+psycopg2://coremsappdb:coremsapppnnl@localhost:5432/coremsapp' for local installations.
     db_jobs : int, optional
         Number of jobs to use for database queries. Default is 3.
     db_chunk_size : int, optional
@@ -835,7 +835,7 @@ class MolecularFormulaSearchSettings:
     min_peaks_per_class: int = 15
 
     url_database: str = (
-        "postgresql+psycopg2://coremsappdb:coremsapppnnl@localhost:5432/coremsapp"
+        "postgresql+psycopg2://coremsappuser:coremsapppnnl@molformdb:5432/coremsapp"
     )
 
     db_jobs: int = 3
@@ -855,7 +855,7 @@ class MolecularFormulaSearchSettings:
 
     min_op_filter: float = 2
 
-    use_pah_line_rule: bool = False
+    use_pah_line_rule: bool = True
 
     min_dbe: float = 0
 

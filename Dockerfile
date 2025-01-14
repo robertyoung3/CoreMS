@@ -1,30 +1,29 @@
-FROM corilo/corems:base-mono-pythonnet AS base
+FROM python:3.10-slim
+
 WORKDIR /home/corems
 
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    mono-complete \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy only necessary files
 COPY corems/ /home/corems/corems
-COPY README.md disclaimer.txt requirements.txt setup.py /home/corems/
-RUN python3 -m pip install -U pip
-RUN python3 -m pip install -U -r requirements.txt
-RUN python3 setup.py install
-RUN rm -f -r /home/corems/corems
-RUN rm /home/corems/setup.py
+COPY examples/notebooks/*.ipynb examples/scripts/ /home/corems/examples/
+COPY README.md disclaimer.txt requirements.txt setup.py SettingsCoreMS.json /home/corems/
 
-#RUN apt update && apt install -y --no-install-recommends  build-essential
+# Install dependencies and clean up in single layer
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install pythonnet && \
+    sed -i 's/psycopg2~/psycopg2-binary~/g' requirements.txt && \
+    python3 -m pip install -U -r requirements.txt && \
+    python3 -m pip install jupyter && \
+    python3 setup.py install && \
+    rm -rf /home/corems/corems /home/corems/setup.py
 
-FROM base AS build
-COPY --from=base /home/corems /home/corems
-WORKDIR /home/corems
+EXPOSE 8888
 
-COPY examples/notebooks/*.ipynb README.md disclaimer.txt requirements.txt SettingsCoreMS.json /home/corems/
-COPY examples/scripts /home/corems/examples
-
-
-RUN python3 -m pip install jupyter
-ENV TINI_VERSION v0.6.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
-RUN chmod +x /usr/bin/tini
-ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD jupyter notebook --port=8888 --no-browser --ip=0.0.0.0 --allow-root
-
-
-
