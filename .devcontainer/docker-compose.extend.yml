@@ -2,20 +2,21 @@ services:
   corems_dev:
     container_name: corems_dev
     build:
-      context: ..
+      context: .
       dockerfile: .devcontainer/Dockerfile.dev
     init: true
     volumes:
-      - ..:/workspace:cached
+      - .:/home/corems:cached 
     command: sleep infinity
-    environment:
-      COREMS_DATABASE_URL: "postgresql+psycopg2://coremsappuser:coremsapppnnl@molformdb:5432/coremsapp"
+    networks:
+      - corems-network
+    env_file:
+      - ./.env
     depends_on:
       molformdb:
         condition: service_healthy
-    networks:
-      - corems-network
 
 networks:
   corems-network:
+    name: corems-network
     external: true

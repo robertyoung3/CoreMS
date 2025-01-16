@@ -1,14 +1,37 @@
-FROM code-registry.emsl.pnl.gov/mass-spectrometry/corems/corems-base-310-dotnet6:2.5.3-1005
+FROM python:3.10-slim
 
-WORKDIR /workspace
+WORKDIR /home/corems
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    git \
+    tree \
+    curl \
+    mono-complete \
+    build-essential \
+    libpq-dev \
+    libxrender1 \    
+    && rm -rf /var/lib/apt/lists/*
 
 # Install development tools
-RUN python3 -m pip install --upgrade pip \
-    && python3 -m pip install pylint pytest pytest-cov debugpy ipykernel
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install pythonnet jupyter && \
+    python3 -m pip install pylint pytest pytest-cov debugpy 
+
+# Configure Jupyter
+RUN rm -rf /usr/local/share/jupyter/kernels/* && \
+    rm -rf /root/.local/share/jupyter/kernels/* && \
+    python -m ipykernel install --prefix=/usr/local --name=corems --display-name="CoreMS" && \
+    jupyter lab --generate-config
+
+# Setup permissions
+RUN mkdir -p /root/.local/share/jupyter && \
+    chmod -R 777 /root/.local/share/jupyter
 
 # Install CoreMS in development mode
-COPY requirements.txt .
+COPY requirements.txt .         
 RUN python3 -m pip install -r requirements.txt
 
-ENV PYTHONPATH=/workspace:${PYTHONPATH}
+ENV PYTHONPATH=/home/corems:${PYTHONPATH}
 ENV PYTHONNET_RUNTIME=coreclr
