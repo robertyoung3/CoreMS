@@ -65,7 +65,7 @@ test_LF.png
 test_fig.png
 Loss_finder.csv
 results/
-.devcontainer/devcontainer.json
+# .devcontainer/devcontainer.json
 db/20210203_Peak212_Neg_HR.raw
 db/PNNLMetV20201027.MSL
 data/ftms_nom_data_products.json
@@ -85,6 +85,8 @@ ext_lib/
 config.yaml
 *.token
 
-# Personal notes
+# RBY
+.env
 notes/
-data/ftms/
+data/
+notebooks/

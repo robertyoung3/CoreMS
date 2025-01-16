@@ -1,0 +1,25 @@
+{
+    "name": "CoreMS Development",
+    "dockerComposeFile": [
+        "../docker-compose.yml",
+        "docker-compose.extend.yml"
+    ],
+    "service": "corems_dev",
+    "workspaceFolder": "/home/corems",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-python.debugpy",
+                "ms-python.black-formatter",
+                "ms-toolsai.jupyter"  
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.testing.pytestEnabled": true
+            }
+        }
+    },
+    "remoteUser": "root"
+}
