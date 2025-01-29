@@ -21,5 +21,8 @@
             }
         }
     },
+    "mounts": [
+        "source=${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig,target=/root/.gitconfig,type=bind"
+    ],
     "remoteUser": "root"
 }
