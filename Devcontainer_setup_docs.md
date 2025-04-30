@@ -136,6 +136,33 @@ docker-compose ps
 docker logs corems_dev
 ```
 
+### Rebuilding After Repository Updates
+
+When you've updated your repository from upstream, perform a clean rebuild:
+
+```bash
+# Step 1: Stop existing containers
+docker-compose down
+docker images | findstr corems
+
+# Step 2: Remove existing images
+docker rmi corems-corems_notebook
+
+# Stop and remove container first if necessary using the container ID 
+# Superior to `docker rmi -f corems-corems_dev`
+docker ps -a | findstr corems-corems_dev
+docker stop 32c47bf6ae5a
+docker rm 32c47bf6ae5a
+docker rmi corems-corems_dev
+
+# Step 3: Rebuild and start containers
+docker-compose up --build -d
+
+# Step 4: Verify the setup
+docker-compose ps
+docker logs corems_dev
+```
+
 ## Benefits of This Approach
 
 - **Clean history:** Rebasing keeps your commit history organized
