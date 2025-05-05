@@ -107,7 +107,7 @@ MSParameters.mass_spectrum.max_picking_mz = 1200.0
 
 The `MSParameters.data_input` object controls how data is read from input files.
 
-`.pks` files are processed using their known formats.  `.txt` files (including `.csv` files) are expected to have the following columns: "m/z", "Peak Height", "Resolving Power", and "S/N" if `isThermoProfile = False`.  Otherwise, they are expected to have "m/z" and "Peak Height". 
+`.pks` files are processed using their known formats.  `.txt` files (including `.csv` files) are expected to have "m/z", "Peak Height", "Resolving Power", and "S/N" columns unless `isThermoProfile = True`.  In that case, they are expected to have "m/z" and "Peak Height" columns. 
 
 ### Header Translation
 
