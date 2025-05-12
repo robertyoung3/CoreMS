@@ -448,35 +448,34 @@ abundance_error = ((theoretical_abundance - experimental_abundance) / theoretica
 
 ### Isotope Score Calculation
 
-CoreMS doesn't calculate an explicit isotope pattern score (like cosine similarity) by default. Instead, it uses a binary approach:
+CoreMS calculates isotope pattern scores using the `_calc_isotopologue_confidence()` method:
 
-1. If an isotopologue peak is found within both mass error and abundance error tolerances, it's considered a match
-2. The formula is assigned if its isotopologues match expected peaks in the spectrum
-3. Each matching isotopologue increases confidence in the formula assignment
+1. For each molecular formula assignment, CoreMS uses both binary matching and quantitative scoring:
+   - Each isotopologue peak is first matched using mass and abundance error tolerances
+   - A similarity score is then calculated comparing the theoretical and observed pattern
 
-If you need a quantitative isotope pattern matching score, you could compute it post-assignment:
-
-```python
-# Example pseudocode for calculating isotope pattern similarity
-def calculate_isotope_similarity(ms_peak, molecular_formula):
-    score = 0
-    total_theoretical_abundance = 0
-    matched_abundance = 0
-    
-    # For each isotopologue expected by the formula
-    for iso_formula in molecular_formula.expected_isotopologues:
-        total_theoretical_abundance += iso_formula.abundance_calc
-        
-        # Check if this isotopologue was matched to a peak
-        if iso_formula.mspeak_index_mono_isotopic is not None:
-            matched_abundance += iso_formula.abundance_calc
-    
-    # Calculate a simple matching score
-    if total_theoretical_abundance > 0:
-        score = matched_abundance / total_theoretical_abundance
-        
-    return score
-```
+2. The scoring process:
+   ```python
+   # Inside MolecularFormulaCalc._calc_isotopologue_confidence():
+   
+   # Create dictionaries of m/z and abundance values
+   dict_mz_abund_ref = {"mz": [mono_mz], "abundance": [mono_abundance]}
+   for mf in expected_isotopologues:
+       dict_mz_abund_ref["abundance"].append(mf.abundance_calc)
+       dict_mz_abund_ref["mz"].append(mf.mz_calc)
+       
+   # Create dictionary of experimental values
+   dict_mz_abund_exp = {mono_mz: mono_abundance}
+   for mf in expected_isotopologues:
+       if mf._mspeak_parent:  # if isotopologue was matched
+           dict_mz_abund_exp[mf.mz_calc] = mf._mspeak_parent.abundance
+       else:  # if isotopologue wasn't found
+           dict_mz_abund_exp[mf.mz_calc] = nextafter(0, 1)  # small non-zero value
+   
+   # Calculate similarity using Manhattan distance
+   distance = SpectralSimilarity(dict_mz_abund_exp, dict_mz_abund_ref).manhattan_distance()
+   correlation = 1 - normalize_distance(distance, [0, 2])
+   ```
 
 ## Formula Selection When Multiple Candidates Match
 
