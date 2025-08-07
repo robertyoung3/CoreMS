@@ -1080,7 +1080,7 @@ class MassSpecBase(MassSpecCalc, KendrickGrouping):
         """
         import matplotlib.pyplot as plt
 
-        if self.baseline_noise_std and self.baseline_noise_std:
+        if self.baseline_noise is not None and self.baseline_noise_std is not None:
             # x = (self.mz_exp_profile.min(), self.mz_exp_profile.max())
             baseline = (self.baseline_noise, self.baseline_noise)
 
@@ -1735,4 +1735,5 @@ class MassSpecCentroidLowRes(MassSpecCentroid):
         """Return the m/z and abundance values of the mass spectrum as a dictionary."""
         r = lambda x: int(round(x, 0))
 
+        return {r(i[0]): r(i[1]) for i in self}
         return {r(i[0]): r(i[1]) for i in self}

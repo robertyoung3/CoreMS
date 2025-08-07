@@ -138,6 +138,10 @@ class _MSPeak(MSPeakCalculation):
         self._kmd, self._kendrick_mass, self._nominal_km = self._calc_kmd(
             kendrick_dict_base
         )
+        
+        # Also update all associated molecular formulas
+        for mf in self.molecular_formulas:
+            mf._kmd, mf._kendrick_mass, mf._nominal_km = mf._calc_kmd(kendrick_dict_base)
 
     def add_molecular_formula(self, molecular_formula_obj):
         """Adds a molecular formula to the peak.

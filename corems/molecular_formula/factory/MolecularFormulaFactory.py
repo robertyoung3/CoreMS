@@ -136,7 +136,11 @@ class MolecularFormulaBase(MolecularFormulaCalc):
                 self._mspeak_parent._ms_parent.mspeaks_settings.kendrick_base
             )
         else:
-            kendrick_dict_base = {"C": 1, "H": 2}
+            # Use the same default as MSPeak instead of hardcoded CH2
+            from corems.encapsulation.factory.parameters import MSParameters
+
+            kendrick_dict_base = MSParameters.ms_peak.kendrick_base
+
         self._kmd, self._kendrick_mass, self._nominal_km = self._calc_kmd(
             kendrick_dict_base
         )
@@ -485,6 +489,10 @@ class MolecularFormulaBase(MolecularFormulaCalc):
             kendrick_dict_base
         )
 
+        # Also update the parent MSPeak if it exists
+        if self._mspeak_parent:
+            self._mspeak_parent.change_kendrick_base(kendrick_dict_base)
+
     def isotopologues(self, min_abundance, current_mono_abundance, dynamic_range):
         """Calculate the isotopologues for a given molecular formula.
 
@@ -500,7 +508,7 @@ class MolecularFormulaBase(MolecularFormulaCalc):
         Yields
         ------
         MolecularFormulaIsotopologue
-            The molecular formula isotopologue.
+            The molecular formula isototopologue.
 
         Notes
         -----

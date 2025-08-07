@@ -117,6 +117,8 @@ class HighResMassSpecExport(Thread):
             "Is Isotopologue",
             "Mono Isotopic Index",
             "Molecular Formula",
+            "KMD",
+            "Formula KMD",
         ]
 
     @property
@@ -637,6 +639,7 @@ class HighResMassSpecExport(Thread):
                 "Resolving Power": ms_peak.resolving_power,
                 "S/N": ms_peak.signal_to_noise,
                 "Ion Charge": ms_peak.ion_charge,
+                "KMD": round(ms_peak.kmd, 4),
                 "Heteroatom Class": eval("Labels.unassigned{}".format(encode)),
             }
 
@@ -669,6 +672,8 @@ class HighResMassSpecExport(Thread):
                 "Ion Type": eval("mformula.ion_type.lower(){}".format(encode)),
                 "Is Isotopologue": int(mformula.is_isotopologue),
                 "Molecular Formula": eval("mformula.string{}".format(encode)),
+                "KMD": round(ms_peak.kmd, 4),
+                "Formula KMD": round(mformula.kmd, 4),
             }
             if additional_columns is not None:
                 possible_dict = {
@@ -679,11 +684,11 @@ class HighResMassSpecExport(Thread):
                 for column in additional_columns:
                     dict_result[column] = possible_dict.get(column)
 
-            if mformula.adduct_atom:
+            if m_formula.adduct_atom:
                 dict_result["Adduct"] = eval("mformula.adduct_atom{}".format(encode))
 
-            if mformula.is_isotopologue:
-                dict_result["Mono Isotopic Index"] = mformula.mspeak_index_mono_isotopic
+            if m_formula.is_isotopologue:
+                dict_result["Mono Isotopic Index"] = m_formula.mspeak_index_mono_isotopic
 
             if self.atoms_order_list is None:
                 atoms_order_list = self.get_all_used_atoms_in_order(mass_spectrum)
