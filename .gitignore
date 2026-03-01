@@ -69,7 +69,8 @@ test_LF.png
 test_fig.png
 Loss_finder.csv
 results/
-.devcontainer/devcontainer.json
+# Old compose file (superseded by docker-compose.yaml)
+docker-compose.yml.old
 db/20210203_Peak212_Neg_HR.raw
 db/PNNLMetV20201027.MSL
 data/ftms_nom_data_products.json
@@ -88,3 +89,20 @@ ext_lib/
 *.egg*
 config.yaml
 *.token
+
+# Environment and credentials
+.env
+
+# Claude Code (commit commands/skills/settings, ignore per-user state)
+.claude/projects/
+.claude/shell-snapshots/
+.claude/*.jsonl
+
+# Data files
+data/
+
+# rby files
+notebooks/
+notes/
+exports/
+user_data/

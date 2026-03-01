@@ -1,0 +1,91 @@
+{
+  "name": "CoreMS Development (Python 3.12)",
+  "dockerComposeFile": "../docker-compose.yaml",
+  "service": "python-app",
+  "workspaceFolder": "/app",
+  // Use devuser (UID 1000) which maps to host user via userns_mode: keep-id
+  "remoteUser": "devuser",
+  "containerUser": "devuser",
+  // Disable UID update - devuser already has correct UID
+  "updateRemoteUserUID": false,
+
+  "portsAttributes": {
+    "5432": { "label": "PostgreSQL" },
+    "8888": { "label": "Jupyter Lab", "onAutoForward": "openBrowser" }
+  },
+
+  "mounts": [
+    "source=${localEnv:HOME}/.claude,target=/home/devuser/.claude,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude.json,target=/home/devuser/.claude.json,type=bind,consistency=cached"
+  ],
+
+  // Ensure devuser owns the .claude directory inside container
+  "postCreateCommand": "sudo chown -R devuser:devuser /home/devuser/.claude /home/devuser/.claude.json 2>/dev/null || true",
+
+  // Note: Works with both Docker and Podman
+  // To use Podman: Install "Podman" extension in VSCode
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "ms-toolsai.jupyter",
+        "ms-python.black-formatter",
+        "mechatroner.rainbow-csv",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers",
+        "anthropic.claude-code"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/opt/venv/bin/python",
+        "jupyter.kernels.filter": [
+          {
+            "path": "/opt/venv/bin/python",
+            "type": "pythonEnvironment"
+          }
+        ],
+        "jupyter.notebookFileRoot": "${workspaceFolder}",
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": "explicit",
+            "source.organizeImports.ruff": "explicit"
+          }
+        },
+        "ruff.path": ["/opt/venv/bin/ruff"],
+
+        // Testing configuration
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false,
+        "python.testing.nosetestsEnabled": false,
+        "python.testing.pytestPath": "/opt/venv/bin/pytest",
+        "python.testing.pytestArgs": [
+          "tests",
+          "-v",
+          "--tb=short"
+        ],
+
+        // Pylance configuration
+        "python.analysis.typeCheckingMode": "basic",
+        "python.analysis.extraPaths": ["/app"],
+        "python.analysis.diagnosticMode": "workspace",
+        "python.languageServer": "Pylance",
+
+        // Jupyter configuration
+        "jupyter.analysis.diagnosticMode": "openFilesOnly",
+        "jupyter.interactiveWindow.textEditor.executeSelection": true,
+
+        // Test discovery
+        "python.testing.autoTestDiscoverOnSaveEnabled": true,
+        "python.testing.cwd": "${workspaceFolder}",
+        "files.exclude": {
+          "**/.pytest_cache": true,
+          "**/__pycache__": true,
+          "**/*.pyc": true
+        }
+      }
+    }
+  }
+}

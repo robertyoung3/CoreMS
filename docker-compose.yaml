@@ -1,0 +1,59 @@
+services:
+  molformdb:
+    container_name: corems_molformdb
+    image: postgres:16
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-coremsappdb} -d ${POSTGRES_DB:-coremsapp}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - corems-network
+
+  python-app:
+    container_name: corems_python_app
+    build:
+      context: .
+      dockerfile: python-app/Dockerfile
+    init: true
+    userns_mode: keep-id
+    env_file:
+      - .env
+    ports:
+      - "8888:8888"
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - PYTHONNET_RUNTIME=coreclr
+    depends_on:
+      molformdb:
+        condition: service_healthy
+    security_opt:
+      - label=disable
+    volumes:
+      - .:/app
+      - jupyter-settings:/home/devuser/.jupyter
+      - ~/.claude:/home/devuser/.claude
+      - ~/.claude.json:/home/devuser/.claude.json
+    networks:
+      - corems-network
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+
+volumes:
+  postgres_data:
+  jupyter-settings:
+
+networks:
+  corems-network:
+    driver: bridge
