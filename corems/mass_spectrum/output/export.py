@@ -118,6 +118,8 @@ class HighResMassSpecExport(Thread):
             "Is Isotopologue",
             "Mono Isotopic Index",
             "Molecular Formula",
+            "KMD",
+            "Formula KMD",
         ]
 
     @property
@@ -642,6 +644,9 @@ class HighResMassSpecExport(Thread):
         else:
             encode = ""
 
+        n_digits = mass_spectrum.mspeaks_settings.kendrick_n_digits
+        include_formula_kmd = mass_spectrum.mspeaks_settings.export_formula_kmd
+
         def add_no_match_dict_data(index, ms_peak):
             """
             Export dictionary of mspeak info for unassigned (no match) data
@@ -655,6 +660,7 @@ class HighResMassSpecExport(Thread):
                 "Resolving Power": ms_peak.resolving_power,
                 "S/N": ms_peak.signal_to_noise,
                 "Ion Charge": ms_peak.ion_charge,
+                "KMD": round(ms_peak.kmd * 10**n_digits),
                 "Heteroatom Class": eval("Labels.unassigned{}".format(encode)),
             }
 
@@ -687,7 +693,10 @@ class HighResMassSpecExport(Thread):
                 "Ion Type": eval("mformula.ion_type.lower(){}".format(encode)),
                 "Is Isotopologue": int(mformula.is_isotopologue),
                 "Molecular Formula": eval("mformula.string{}".format(encode)),
+                "KMD": round(ms_peak.kmd * 10**n_digits),
             }
+            if include_formula_kmd:
+                dict_result["Formula KMD"] = round(mformula.kmd * 10**n_digits)
             if additional_columns is not None:
                 possible_dict = {
                     "Aromaticity Index": mformula.A_I,

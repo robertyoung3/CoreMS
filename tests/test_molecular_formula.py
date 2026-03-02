@@ -16,7 +16,7 @@ def test_molecular_formula_from_dict():
     )
     assert formula_obj.ion_type == "RADICAL"
     assert round(formula_obj.mz_calc, 2) == round(349.886303060457, 2)
-    assert formula_obj.kmd == -50
+    assert round(formula_obj.kmd * 100) == -50  # KMD now stored unscaled
     assert round(formula_obj.kendrick_mass, 2) == round(349.4956152007638, 2)
     assert formula_obj.knm == 349
     assert formula_obj.class_label == "O10 Cl2 -R"

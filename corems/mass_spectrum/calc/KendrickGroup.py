@@ -143,11 +143,12 @@ class KendrickGrouping:
 
         """
         kendrick_group_index = {}
+        n_digits = self.mspeaks_settings.kendrick_n_digits
 
         for i in list_indexes:
             mspeak = self.mspeaks[i]
 
-            group = round(mspeak.kmd * 100)
+            group = round(mspeak.kmd * 10**n_digits)
 
             if group not in kendrick_group_index:
                 kendrick_group_index[group] = [i]

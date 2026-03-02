@@ -719,10 +719,7 @@ class MolecularFormulaCalc:
 
         nominal_km = int(kendrick_mass)
 
-        kmd = (nominal_km - kendrick_mass) * 100
-
-        # kmd = (nominal_km - km) * 1
-        kmd = round(kmd, 0)
+        kmd = nominal_km - kendrick_mass
 
         return kmd, kendrick_mass, nominal_km
 
