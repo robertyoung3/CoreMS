@@ -38,3 +38,15 @@ bd sync               # Sync with git
 - NEVER say "ready to push when you are" - YOU must push
 - If push fails, resolve and retry until it succeeds
 
+## Upstream PR Hygiene
+
+This is a fork of EMSL-Computing/CoreMS. Upstream PRs must contain **only** the minimal bug fix or feature diff.
+
+1. `git fetch upstream master`
+2. `git checkout -b fix/my-fix upstream/master` — branch from **upstream**, not fork master
+3. Make only the relevant code changes
+4. Validate: `git diff --name-only upstream/master..HEAD` — must show only intended files
+5. Reject if diff includes: `.claude/`, `.devcontainer/`, `openspec/`, `docker-compose*`, `pyproject.toml`, `python-app/`, `AGENTS.md`, `CLAUDE.md`, `.env`, `.gitignore`
+
+See `CLAUDE.md` for full details.
+
