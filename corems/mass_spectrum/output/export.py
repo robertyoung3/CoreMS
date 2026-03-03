@@ -9,7 +9,7 @@ from threading import Thread
 import h5py
 import toml
 import numpy as np
-from numpy import NaN, empty
+from numpy import nan, empty
 from pandas import DataFrame
 
 from corems.encapsulation.constant import Atoms, Labels #Labels is accessed in the eval() function
@@ -594,7 +594,7 @@ class HighResMassSpecExport(Thread):
 
         all_lines = []
         for dict_res in dict_list:
-            result_line = [NaN] * len(column_labels)
+            result_line = [nan] * len(column_labels)
 
             for label, value in dict_res.items():
                 label_index = column_labels.index(label)
