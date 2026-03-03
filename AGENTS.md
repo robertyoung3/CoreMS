@@ -42,11 +42,16 @@ bd sync               # Sync with git
 
 This is a fork of EMSL-Computing/CoreMS. Upstream PRs must contain **only** the minimal bug fix or feature diff.
 
+**Always use a git worktree** — never switch branches in the main working directory. Upstream tracks files (`.env`) that our fork gitignores, so branch switching destroys fork-specific state.
+
 1. `git fetch upstream master`
-2. `git checkout -b fix/my-fix upstream/master` — branch from **upstream**, not fork master
-3. Make only the relevant code changes
-4. Validate: `git diff --name-only upstream/master..HEAD` — must show only intended files
-5. Reject if diff includes: `.claude/`, `.devcontainer/`, `openspec/`, `docker-compose*`, `pyproject.toml`, `python-app/`, `AGENTS.md`, `CLAUDE.md`, `.env`, `.gitignore`
+2. `git worktree add /tmp/corems-fix-name upstream/master -b fix/my-fix`
+3. `cd /tmp/corems-fix-name` — work in the worktree
+4. Make only the relevant code changes
+5. Validate: `git diff --name-only upstream/master..HEAD` — must show only intended files
+6. Reject if diff includes: `.claude/`, `.devcontainer/`, `openspec/`, `docker-compose*`, `pyproject.toml`, `python-app/`, `AGENTS.md`, `CLAUDE.md`, `.env`, `.gitignore`
+7. Push and create PR with `--head robertyoung3:fix/my-fix`
+8. Clean up: `cd ~/VScodeProjects/CoreMS && git worktree remove /tmp/corems-fix-name`
 
 See `CLAUDE.md` for full details.
 
