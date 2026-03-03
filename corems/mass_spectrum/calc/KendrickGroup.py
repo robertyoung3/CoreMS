@@ -143,7 +143,7 @@ class KendrickGrouping:
 
         """
         kendrick_group_index = {}
-        n_digits = self.mspeaks_settings.kendrick_n_digits
+        n_digits = self.mspeaks_settings.kmd_n_digits
 
         for i in list_indexes:
             mspeak = self.mspeaks[i]

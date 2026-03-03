@@ -118,8 +118,6 @@ class HighResMassSpecExport(Thread):
             "Is Isotopologue",
             "Mono Isotopic Index",
             "Molecular Formula",
-            "KMD",
-            "Formula KMD",
         ]
 
     @property
@@ -175,7 +173,10 @@ class HighResMassSpecExport(Thread):
         ----------
         additional_columns : list, optional
             Additional columns to include in the DataFrame. Defaults to None.
-            Suitable additional columns are: 'Aromaticity Index', 'NOSC', 'Aromaticity Index (modified)'.
+            Suitable additional columns are: 'Aromaticity Index', 'NOSC',
+            'Aromaticity Index (modified)', 'KMD', 'Formula KMD'.
+            KMD and Formula KMD scaling is controlled by ms_peak settings
+            kmd_n_digits and formula_kmd_n_digits respectively.
 
         Returns
         -------
@@ -187,6 +188,8 @@ class HighResMassSpecExport(Thread):
                 "Aromaticity Index",
                 "NOSC",
                 "Aromaticity Index (modified)",
+                "KMD",
+                "Formula KMD",
             ]
             if additional_columns:
                 for column in additional_columns:
@@ -644,10 +647,10 @@ class HighResMassSpecExport(Thread):
         else:
             encode = ""
 
-        n_digits = mass_spectrum.mspeaks_settings.kendrick_n_digits
-        include_formula_kmd = mass_spectrum.mspeaks_settings.export_formula_kmd
+        kmd_n_digits = mass_spectrum.mspeaks_settings.kmd_n_digits
+        formula_kmd_n_digits = mass_spectrum.mspeaks_settings.formula_kmd_n_digits
 
-        def add_no_match_dict_data(index, ms_peak):
+        def add_no_match_dict_data(index, ms_peak, additional_columns=None):
             """
             Export dictionary of mspeak info for unassigned (no match) data
             """
@@ -660,9 +663,11 @@ class HighResMassSpecExport(Thread):
                 "Resolving Power": ms_peak.resolving_power,
                 "S/N": ms_peak.signal_to_noise,
                 "Ion Charge": ms_peak.ion_charge,
-                "KMD": round(ms_peak.kmd * 10**n_digits),
                 "Heteroatom Class": eval("Labels.unassigned{}".format(encode)),
             }
+            if additional_columns is not None:
+                if "KMD" in additional_columns:
+                    dict_result["KMD"] = round(ms_peak.kmd * 10**kmd_n_digits)
 
             dict_data_list.append(dict_result)
 
@@ -693,18 +698,19 @@ class HighResMassSpecExport(Thread):
                 "Ion Type": eval("mformula.ion_type.lower(){}".format(encode)),
                 "Is Isotopologue": int(mformula.is_isotopologue),
                 "Molecular Formula": eval("mformula.string{}".format(encode)),
-                "KMD": round(ms_peak.kmd * 10**n_digits),
             }
-            if include_formula_kmd:
-                dict_result["Formula KMD"] = round(mformula.kmd * 10**n_digits)
             if additional_columns is not None:
-                possible_dict = {
-                    "Aromaticity Index": mformula.A_I,
-                    "NOSC": mformula.nosc,
-                    "Aromaticity Index (modified)": mformula.A_I_mod,
+                column_getters = {
+                    "Aromaticity Index": lambda: mformula.A_I,
+                    "NOSC": lambda: mformula.nosc,
+                    "Aromaticity Index (modified)": lambda: mformula.A_I_mod,
+                    "KMD": lambda: round(ms_peak.kmd * 10**kmd_n_digits),
+                    "Formula KMD": lambda: round(mformula.kmd * 10**formula_kmd_n_digits),
                 }
                 for column in additional_columns:
-                    dict_result[column] = possible_dict.get(column)
+                    getter = column_getters.get(column)
+                    if getter:
+                        dict_result[column] = getter()
 
             if mformula.adduct_atom:
                 dict_result["Adduct"] = eval("mformula.adduct_atom{}".format(encode))
@@ -761,12 +767,12 @@ class HighResMassSpecExport(Thread):
                                 )
                 else:
                     if include_no_match and no_match_inline:
-                        add_no_match_dict_data(index, ms_peak)
+                        add_no_match_dict_data(index, ms_peak, additional_columns=additional_columns)
 
             if include_no_match and not no_match_inline:
                 for index, ms_peak in enumerate(mass_spectrum):
                     if not ms_peak:
-                        add_no_match_dict_data(index, ms_peak)
+                        add_no_match_dict_data(index, ms_peak, additional_columns=additional_columns)
             # reset score method as the one chosen in the output
             mass_spectrum.molecular_search_settings.score_method = current_method
 
@@ -800,7 +806,7 @@ class HighResMassSpecExport(Thread):
 
                             # cutoff because of low score
                             else:
-                                add_no_match_dict_data(index, ms_peak)
+                                add_no_match_dict_data(index, ms_peak, additional_columns=additional_columns)
 
                         else:
                             if m_formula.is_isotopologue:  # isotopologues inline
@@ -821,7 +827,7 @@ class HighResMassSpecExport(Thread):
                 else:
                     # include not_match
                     if include_no_match and no_match_inline:
-                        add_no_match_dict_data(index, ms_peak)
+                        add_no_match_dict_data(index, ms_peak, additional_columns=additional_columns)
 
             if include_isotopologues and not isotopologue_inline:
                 for index, ms_peak in enumerate(mass_spectrum):
@@ -841,7 +847,7 @@ class HighResMassSpecExport(Thread):
             if include_no_match and not no_match_inline:
                 for index, ms_peak in enumerate(mass_spectrum):
                     if not ms_peak:
-                        add_no_match_dict_data(index, ms_peak)
+                        add_no_match_dict_data(index, ms_peak, additional_columns=additional_columns)
 
         # remove duplicated add_match data possibly introduced on the output_score_filter step
         res = []
