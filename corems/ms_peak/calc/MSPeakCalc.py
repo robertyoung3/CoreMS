@@ -19,7 +19,7 @@ from numpy import (
     rint,
     sqrt,
     square,
-    trapezoid,
+    trapz,
 )
 
 from corems.encapsulation.constant import Atoms
@@ -162,7 +162,7 @@ class MSPeakCalculation:
             if xx[0] > xx[-1]:
                 xx = flip(xx)
                 yy = flip(yy)
-            return float(trapezoid(yy, xx))
+            return float(trapz(yy, xx))
 
         else:
             warnings.warn(

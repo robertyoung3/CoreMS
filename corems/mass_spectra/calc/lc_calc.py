@@ -531,7 +531,7 @@ class LCCalculations:
                 self.mass_features[idx].final_scan = right_scan
 
                 # Find area under peak using limits from EIC centroid detector, add to mass_features and EICData
-                area = np.trapezoid(
+                area = np.trapz(
                     myEIC.eic_smoothed[l_a_r_scan_idx[0][0] : l_a_r_scan_idx[0][2] + 1],
                     myEIC.time[l_a_r_scan_idx[0][0] : l_a_r_scan_idx[0][2] + 1],
                 )
