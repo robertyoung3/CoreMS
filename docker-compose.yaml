@@ -40,7 +40,7 @@ services:
       - label=disable
     volumes:
       - .:/app
-      - jupyter-settings:/home/devuser/.jupyter
+      - ~/.jupyter:/home/devuser/.jupyter
       - ~/.claude:/home/devuser/.claude
       - ~/.claude.json:/home/devuser/.claude.json
     networks:
@@ -52,7 +52,6 @@ services:
 
 volumes:
   postgres_data:
-  jupyter-settings:
 
 networks:
   corems-network:
