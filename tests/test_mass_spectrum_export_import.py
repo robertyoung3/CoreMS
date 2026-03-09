@@ -53,6 +53,52 @@ def test_molecular_formula_search(mass_spectrum_silico):
     assert mass_spectrum_silico[1][0].string == "C55 H73 N1 13C1"
 
 
+def test_kmd_columns_in_dataframe(mass_spectrum_silico):
+    """Test KMD and Formula KMD additional columns with configurable n_digits."""
+    SearchMolecularFormulas(
+        mass_spectrum_silico, find_isotopologues=True
+    ).run_worker_ms_peaks([mass_spectrum_silico[0]])
+
+    # Set custom n_digits parameters
+    mass_spectrum_silico.mspeaks_settings.kmd_n_digits = 3
+    mass_spectrum_silico.mspeaks_settings.formula_kmd_n_digits = 4
+
+    df = mass_spectrum_silico.to_dataframe(additional_columns=["KMD", "Formula KMD"])
+
+    # Both columns should be present
+    assert "KMD" in df.columns
+    assert "Formula KMD" in df.columns
+
+    # KMD should be integer-scaled (multiplied by 10^n_digits and rounded)
+    kmd_values = df["KMD"].dropna()
+    assert len(kmd_values) > 0
+    for val in kmd_values:
+        assert isinstance(val, (int,)), f"KMD value {val} is not an integer"
+
+    # Formula KMD should be a float rounded to n decimal places, between -1 and 1
+    formula_kmd_values = df["Formula KMD"].dropna()
+    assert len(formula_kmd_values) > 0
+    for val in formula_kmd_values:
+        assert -1 <= val <= 1, f"Formula KMD value {val} is not between -1 and 1"
+        # Check rounding: value * 10^n_digits should be very close to an integer
+        scaled = val * 10**4
+        assert abs(scaled - round(scaled)) < 1e-9, (
+            f"Formula KMD value {val} not rounded to 4 decimal places"
+        )
+
+    # Test with different n_digits
+    mass_spectrum_silico.mspeaks_settings.kmd_n_digits = 2
+    mass_spectrum_silico.mspeaks_settings.formula_kmd_n_digits = 2
+
+    df2 = mass_spectrum_silico.to_dataframe(additional_columns=["KMD", "Formula KMD"])
+    formula_kmd_values_2 = df2["Formula KMD"].dropna()
+    for val in formula_kmd_values_2:
+        scaled = val * 10**2
+        assert abs(scaled - round(scaled)) < 1e-9, (
+            f"Formula KMD value {val} not rounded to 2 decimal places"
+        )
+
+
 def test_mass_spec_export_import_with_annote(mass_spectrum_silico):
     SearchMolecularFormulas(
         mass_spectrum_silico, find_isotopologues=True

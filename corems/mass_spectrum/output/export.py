@@ -705,7 +705,7 @@ class HighResMassSpecExport(Thread):
                     "NOSC": lambda: mformula.nosc,
                     "Aromaticity Index (modified)": lambda: mformula.A_I_mod,
                     "KMD": lambda: round(ms_peak.kmd * 10**kmd_n_digits),
-                    "Formula KMD": lambda: round(mformula.kmd * 10**formula_kmd_n_digits),
+                    "Formula KMD": lambda: round(mformula.kmd, formula_kmd_n_digits),
                 }
                 for column in additional_columns:
                     getter = column_getters.get(column)

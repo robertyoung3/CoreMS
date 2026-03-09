@@ -573,7 +573,7 @@ class MassSpecPeakSetting:
 
     kmd_n_digits: int = 2  # KMD scaled by 10^n_digits and rounded to integer (2 = legacy *100)
 
-    formula_kmd_n_digits: int = 4  # Formula KMD scaled by 10^n_digits (independent of kmd_n_digits)
+    formula_kmd_n_digits: int = 4  # Formula KMD rounded to n decimal places (value stays between -1 and 1)
 
     implemented_kendrick_rounding_methods: tuple = ("floor", "ceil", "round")
 
