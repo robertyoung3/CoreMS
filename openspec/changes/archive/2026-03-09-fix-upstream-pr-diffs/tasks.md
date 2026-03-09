@@ -24,5 +24,5 @@
 ## 5. Return to fork master and commit guardrails
 
 - [x] 5.1 Switch back to fork `master` branch
-- [ ] 5.2 Commit `CLAUDE.md` and updated `AGENTS.md` to fork master
-- [ ] 5.3 Push fork master to origin
+- [x] 5.2 Commit `CLAUDE.md` and updated `AGENTS.md` to fork master
+- [x] 5.3 Push fork master to origin
