@@ -1,5 +1,20 @@
 # CoreMS Project Instructions
 
+## Development Environment
+
+This fork uses a Podman devcontainer. The container must be running to execute tests or use CoreMS imports.
+
+- **Start**: `podman compose up -d`
+- **Run tests**: `podman exec corems_python_app python -m pytest <test_path> -v`
+- **Containers**: `corems_python_app` (Python/CoreMS), `corems_molformdb` (PostgreSQL)
+
+## Remotes
+
+- `origin` → `robertyoung3/CoreMS` (this fork)
+- `upstream` → `EMSL-Computing/CoreMS` (upstream project)
+
+Fork-only work (features, tooling, config) stays on `origin` branches — never pushed upstream. Bug fixes and feature proposals targeting upstream use git worktrees branched from `upstream/master` (see below).
+
 ## Upstream Contribution Workflow
 
 This is a fork of [EMSL-Computing/CoreMS](https://github.com/EMSL-Computing/CoreMS). The fork contains local development setup (devcontainers, OpenSpec, Claude tooling) that must never appear in upstream PRs.

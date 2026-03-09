@@ -38,6 +38,14 @@ bd sync               # Sync with git
 - NEVER say "ready to push when you are" - YOU must push
 - If push fails, resolve and retry until it succeeds
 
+## Testing
+
+Tests must run inside the Podman container — packages are not available on the host.
+
+```bash
+podman exec corems_python_app python -m pytest <test_path> -v
+```
+
 ## Upstream PR Hygiene
 
 This is a fork of EMSL-Computing/CoreMS. Upstream PRs must contain **only** the minimal bug fix or feature diff.
