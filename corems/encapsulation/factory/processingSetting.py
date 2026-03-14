@@ -533,12 +533,12 @@ class MassSpecPeakSetting:
         Method for calculating the nominal Kendrick mass. Valid values are 'floor', 'ceil', or 'round'.
         Defaults to 'floor'.
     kmd_n_digits : int, optional
-        Number of digits for KMD scaling. KMD is scaled by 10^n_digits and rounded to integer.
+        Number of decimal places for rounding KMD on export.
         Used when 'KMD' is included in additional_columns for export.
-        Defaults to 2 (equivalent to the legacy *100 scaling).
+        Defaults to 2.
     formula_kmd_n_digits : int, optional
-        Number of digits for Formula KMD scaling. Formula KMD is computed from theoretical m/z,
-        scaled by 10^n_digits, and rounded to integer. Independent of kmd_n_digits.
+        Number of decimal places for rounding Formula KMD on export.
+        Formula KMD is computed from theoretical m/z. Independent of kmd_n_digits.
         Used when 'Formula KMD' is included in additional_columns for export.
         Defaults to 4.
     implemented_kendrick_rounding_methods : tuple
@@ -571,9 +571,9 @@ class MassSpecPeakSetting:
 
     kendrick_rounding_method: str = "floor"  # 'floor', 'ceil' or 'round' are valid methods for calculating nominal kendrick mass
 
-    kmd_n_digits: int = 2  # KMD scaled by 10^n_digits and rounded to integer (2 = legacy *100)
+    kmd_n_digits: int = 2  # KMD rounded to n decimal places on export
 
-    formula_kmd_n_digits: int = 4  # Formula KMD rounded to n decimal places (value stays between -1 and 1)
+    formula_kmd_n_digits: int = 4  # Formula KMD rounded to n decimal places on export
 
     implemented_kendrick_rounding_methods: tuple = ("floor", "ceil", "round")
 

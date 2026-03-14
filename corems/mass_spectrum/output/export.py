@@ -175,7 +175,7 @@ class HighResMassSpecExport(Thread):
             Additional columns to include in the DataFrame. Defaults to None.
             Suitable additional columns are: 'Aromaticity Index', 'NOSC',
             'Aromaticity Index (modified)', 'KMD', 'Formula KMD'.
-            KMD and Formula KMD scaling is controlled by ms_peak settings
+            KMD and Formula KMD rounding precision is controlled by ms_peak settings
             kmd_n_digits and formula_kmd_n_digits respectively.
 
         Returns
@@ -667,7 +667,7 @@ class HighResMassSpecExport(Thread):
             }
             if additional_columns is not None:
                 if "KMD" in additional_columns:
-                    dict_result["KMD"] = round(ms_peak.kmd * 10**kmd_n_digits)
+                    dict_result["KMD"] = round(ms_peak.kmd, kmd_n_digits)
 
             dict_data_list.append(dict_result)
 
@@ -704,7 +704,7 @@ class HighResMassSpecExport(Thread):
                     "Aromaticity Index": lambda: mformula.A_I,
                     "NOSC": lambda: mformula.nosc,
                     "Aromaticity Index (modified)": lambda: mformula.A_I_mod,
-                    "KMD": lambda: round(ms_peak.kmd * 10**kmd_n_digits),
+                    "KMD": lambda: round(ms_peak.kmd, kmd_n_digits),
                     "Formula KMD": lambda: round(mformula.kmd, formula_kmd_n_digits),
                 }
                 for column in additional_columns:

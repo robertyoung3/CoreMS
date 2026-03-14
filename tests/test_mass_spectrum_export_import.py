@@ -69,18 +69,21 @@ def test_kmd_columns_in_dataframe(mass_spectrum_silico):
     assert "KMD" in df.columns
     assert "Formula KMD" in df.columns
 
-    # KMD should be integer-scaled (multiplied by 10^n_digits and rounded)
+    # KMD should be a float rounded to n decimal places, between -1 and 1
     kmd_values = df["KMD"].dropna()
     assert len(kmd_values) > 0
     for val in kmd_values:
-        assert isinstance(val, (int,)), f"KMD value {val} is not an integer"
+        assert -1 <= val <= 1, f"KMD value {val} is not between -1 and 1"
+        scaled = val * 10**3
+        assert abs(scaled - round(scaled)) < 1e-9, (
+            f"KMD value {val} not rounded to 3 decimal places"
+        )
 
     # Formula KMD should be a float rounded to n decimal places, between -1 and 1
     formula_kmd_values = df["Formula KMD"].dropna()
     assert len(formula_kmd_values) > 0
     for val in formula_kmd_values:
         assert -1 <= val <= 1, f"Formula KMD value {val} is not between -1 and 1"
-        # Check rounding: value * 10^n_digits should be very close to an integer
         scaled = val * 10**4
         assert abs(scaled - round(scaled)) < 1e-9, (
             f"Formula KMD value {val} not rounded to 4 decimal places"
@@ -91,6 +94,12 @@ def test_kmd_columns_in_dataframe(mass_spectrum_silico):
     mass_spectrum_silico.mspeaks_settings.formula_kmd_n_digits = 2
 
     df2 = mass_spectrum_silico.to_dataframe(additional_columns=["KMD", "Formula KMD"])
+    kmd_values_2 = df2["KMD"].dropna()
+    for val in kmd_values_2:
+        scaled = val * 10**2
+        assert abs(scaled - round(scaled)) < 1e-9, (
+            f"KMD value {val} not rounded to 2 decimal places"
+        )
     formula_kmd_values_2 = df2["Formula KMD"].dropna()
     for val in formula_kmd_values_2:
         scaled = val * 10**2
